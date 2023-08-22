@@ -1,0 +1,265 @@
+use("mongoCitas");
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: [
+        "ID",
+        "names",
+        "phone",
+        "address",
+        "email",
+        "genre",
+        "attendant",
+      ],
+      properties: {
+        ID: {
+          bsonType: "int",
+          description: "ID is required",
+        },
+
+        names: {
+          bsonType: "object",
+          required: ["name", "surname"],
+          properties: {
+            name: {
+              bsonType: "string",
+              description: "name is required",
+            },
+            surname: {
+              bsonType: "string",
+              description: "surname is required",
+            },
+          },
+          description: "Names is required",
+        },
+
+        phone: {
+          bsonType: "string",
+          maxLength: 10,
+          description:
+            "phone number is required and has a maximum of 10 characters.",
+        },
+
+        address: {
+          bsonType: "string",
+          description: "address is required",
+        },
+
+        email: {
+          bsonType: "string",
+          description: "email is required",
+        },
+
+        genre: {
+          bsonType: "object",
+          required: ["nameGenre", "abbreviation"],
+          properties: {
+            nameGenre: {
+              bsonType: "string",
+              enum: ["masculino", "femenino"],
+              description: "genre's name is required",
+            },
+            abbreviation: {
+              bsonType: "string",
+              enum: ["M", "F"],
+              description: "genre's abbreviation is required",
+            },
+          },
+          description: "genre is required",
+        },
+
+        attendant: {
+          bsonType: "object",
+          required: ["ID", "name", "phone", "address"],
+          properties: {
+            ID: {
+              bsonType: "int",
+              description: "attendant's ID is required",
+            },
+            name: {
+              bsonType: "string",
+              description: "attendant's name is required",
+            },
+            phone: {
+              bsonType: "string",
+              maxLength: 10,
+              description: "attendant's phone is required",
+            },
+            address: {
+              bsonType: "string",
+              description: "attendant's address is required",
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
+use("mongoCitas");
+db.createCollection("doctors", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["ID", "name", "office", "specialty"],
+      properties: {
+        ID: {
+          bsonType: "int",
+          description: "ID is required",
+        },
+        name: {
+          bsonType: "string",
+          description: "name is required",
+        },
+        office: {
+          bsonType: "object",
+          required: ["ID", "name"],
+          properties: {
+            ID: {
+              bsonType: "int",
+              description: "office's ID is required",
+            },
+            name: {
+              bsonType: "string",
+              description: "office's name is required",
+            },
+          },
+          description: "office is required",
+        },
+        specialty: {
+          bsonType: "object",
+          required: ["ID", "name"],
+          properties: {
+            ID: {
+              bsonType: "int",
+              description: "specialty's ID is required",
+            },
+            name: {
+              bsonType: "string",
+              description: "specialty's name is required",
+            },
+          },
+          description: "specialty is required",
+        },
+      },
+    },
+  },
+});
+
+use("mongoCitas");
+db.createCollection("quotes", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["date", "state", "doctor", "user"],
+      properties: {
+        ID: {
+          bsonType: "int",
+        },
+        date: {
+          bsonType: "date",
+          description: "date is required",
+        },
+        state: {
+          bsonType: "string",
+          enum: ["activo", "inactivo"],
+          description: "state is required",
+        },
+        doctor: {
+          bsonType: "object",
+          required: ["ID", "name"],
+          properties: {
+            ID: {
+              bsonType: "int",
+              description: "doctor's ID is required",
+            },
+            name: {
+              bsonType: "string",
+              description: "doctor's name is required",
+            },
+          },
+          description: "doctor is required",
+        },
+        user: {
+          bsonType: "object",
+          required: ["ID", "names"],
+          properties: {
+            ID: {
+              bsonType: "int",
+              description: "user's ID is required",
+            },
+            names: {
+              bsonType: "object",
+              required: ["name", "surname"],
+              properties: {
+                name: {
+                  bsonType: "string",
+                  description: "user's name is required",
+                },
+                surname: {
+                  bsonType: "string",
+                  description: "user's surname is required",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
+use("mongoCitas");
+db.users.insertOne({
+  ID: 1,
+  names: {
+    name: "John",
+    surname: "Doe",
+  },
+  phone: "1234567890",
+  address: "123 Main St",
+  email: "john.doe@example.com",
+  genre: {
+    nameGenre: "masculino",
+    abbreviation: "M",
+  },
+  attendant: {
+    ID: 101,
+    name: "Jane Smith",
+    phone: "9876543210",
+    address: "456 Elm St",
+  },
+});
+
+use("mongoCitas");
+db.doctors.insertOne({
+  ID: 201,
+  name: "Dr. Amanda Johnson",
+  office: {
+    ID: 301,
+    name: "Johnson Medical Center",
+  },
+  specialty: {
+    ID: 401,
+    name: "Cardiology",
+  },
+});
+
+use("mongoCitas");
+db.quotes.insertOne({
+  ID: 1001,
+  date: ISODate("2023-08-22T10:00:00Z"),
+  state: "activo",
+  doctor: {
+    ID: 201,
+    name: "Dr. Amanda Johnson",
+  },
+  user: {
+    ID: 1,
+    names: {
+      name: "John",
+      surname: "Doe",
+    },
+  },
+});
